@@ -1,9 +1,19 @@
 import boto, sys, getopt, os.path
 
+def connect_s3():
+   s3 = boto.connect_s3()
+   return s3
+
 def check_file(backup_file):
     if not os.path.isfile(backup_file):
         print "To backup file doesn't exist"
         sys.exit(2)
+
+def check_bucket(conn, bucket):
+    test = conn.lookup(bucket, validate=True)
+    if test is None:
+        print "Bucket does not exist"
+        sys.exit(2)	
 
 def check_args(argv):
     usage = "Usage: s3backup.py -b <bucket name> -f <file to backup"
@@ -16,5 +26,7 @@ def check_args(argv):
 
 if __name__ == '__main__':
     args = check_args(sys.argv[1:])
-
+    conn = connect_s3()
+    print args
     check_file(args[1][1])
+    check_bucket(conn, args[0][1])
