@@ -13,7 +13,11 @@ def check_bucket(conn, bucket):
     test = conn.lookup(bucket, validate=True)
     if test is None:
         print "Bucket does not exist"
-        sys.exit(2)	
+        sys.exit(2)
+	
+def get_bucket(conn, bucket):
+    bucket_obj = conn.get_bucket(bucket)
+    return bucket_obj
 
 def check_args(argv):
     usage = "Usage: s3backup.py -b <bucket name> -f <file to backup"
@@ -27,6 +31,7 @@ def check_args(argv):
 if __name__ == '__main__':
     args = check_args(sys.argv[1:])
     conn = connect_s3()
-    print args
     check_file(args[1][1])
     check_bucket(conn, args[0][1])
+    bucket = get_bucket(conn, args[0][1])
+    print bucket
