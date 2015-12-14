@@ -19,6 +19,14 @@ def get_bucket(conn, bucket):
     bucket_obj = conn.get_bucket(bucket)
     return bucket_obj
 
+def add_file(s3, bucket, to_backup):
+    key = bucket.get_key(to_backup)
+
+    if key.exists is None:
+        key = bucket.new_key(to_backup)
+        key.set_contents_from_filename(to_backup)
+        key.set_acl('public-read')
+
 def check_args(argv):
     usage = "Usage: s3backup.py -b <bucket name> -f <file to backup"
     try:
@@ -34,4 +42,3 @@ if __name__ == '__main__':
     check_file(args[1][1])
     check_bucket(conn, args[0][1])
     bucket = get_bucket(conn, args[0][1])
-    print bucket
